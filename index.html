@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>FinalTutorial</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>index</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11784,15 +11784,13 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>Mental health has been a growing concern over the past few years however it has recently become an issue more present in the public eye. This tutorial is will demonstrate what changes are present in the mental health of individuals over the past two years.</p>
-<p>In this tutorial, we will show how to do some plot some graphs and apply linear regression using Matplotlib, Pandas, and Sklearn. We will be using two datasets from Open Sourcing Mental Illness Database. We will use the datasets on how mental health affects</p>
 <h3 id="We-will-be-covering-the-following-topics-in-this-tutorial:">We will be covering the following topics in this tutorial:<a class="anchor-link" href="#We-will-be-covering-the-following-topics-in-this-tutorial:">&#182;</a></h3><ul>
 <li>Installing the Libraries</li>
 <li>Loading and Plotting the Data</li>
-<li>Analysis and Machine Learning</li>
+<li>Exploratory Data Analysis</li>
 <li>Conclusion &amp; Insight</li>
-<li>Closing &amp; Sources</li>
 </ul>
-<h3 id="Hypothesis">Hypothesis<a class="anchor-link" href="#Hypothesis">&#182;</a></h3><p>We will be looking at this data and determining if there is a relation between the mental health of an individual and their gender or the population size of their job.</p>
+<h3 id="Hypothesis">Hypothesis<a class="anchor-link" href="#Hypothesis">&#182;</a></h3><p>We will be looking at this data and determining if there is a relation between the mental health of an individual and their gender or the population size of their job or age.</p>
 <h2 id="Getting-Started">Getting Started<a class="anchor-link" href="#Getting-Started">&#182;</a></h2><p>First, download the 2014 dataset from <a href="https://www.kaggle.com/osmi/mental-health-in-tech-survey">https://www.kaggle.com/osmi/mental-health-in-tech-survey</a> and the continued 2016 dataset from <a href="https://www.kaggle.com/osmi/mental-health-in-tech-2016">https://www.kaggle.com/osmi/mental-health-in-tech-2016</a>. This dataset is in the form of a csv(comma-seperated values file) and contains a set of survey questions. We will look at the 2014 answers and the 2016 answers, find trends and then see how we can compare the two datasets. To read the dataset, we have to load our CSV file into a form that we can manipulate using python. To do this, we will use the pandas library. Pandas uses a datatype called a data frame, which puts the data into a table. FTo get a better understanding of pandas and dataframes, you can visit the following pages:</p>
 <ul>
 <li><strong>Documentation</strong>: <a href="http://pandas.pydata.org">http://pandas.pydata.org</a></li>
@@ -11808,15 +11806,18 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#import the following libraries</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 
+<span class="c1">#Read csv allows us to read from a csv file and convert it to a dataframe</span>
 <span class="n">dataframe_2016</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;mental-heath-in-tech-2016.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+<span class="c1">#Print out the first 3 values</span>
 <span class="n">dataframe_2016</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
@@ -12000,18 +12001,22 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_2016</span> <span class="o">=</span> <span class="n">dataframe_2016</span><span class="p">[[</span><span class="s1">&#39;How many employees does your company or organization have?&#39;</span><span class="p">,</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Create a deep copy of the dataframe</span>
+<span class="n">df_2016</span> <span class="o">=</span> <span class="n">dataframe_2016</span><span class="p">[[</span><span class="s1">&#39;How many employees does your company or organization have?&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;What is your gender?&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;Have you been diagnosed with a mental health condition by a medical professional?&#39;</span><span class="p">,</span> 
                           <span class="s1">&#39;What is your age?&#39;</span><span class="p">,</span>
                            <span class="s1">&#39;Which of the following best describes your work position?&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
+<span class="c1">#Rename the columns </span>
 <span class="n">new_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Company Size&#39;</span><span class="p">,</span><span class="s1">&#39;Gender&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">,</span> <span class="s1">&#39;Age&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">,</span> <span class="s1">&#39;Age&#39;</span><span class="p">,</span>
               <span class="s1">&#39;Job title&#39;</span><span class="p">]</span>
 
 <span class="n">df_2016</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">new_columns</span>
 
+<span class="c1">#We can see that our self employed column is actually </span>
+<span class="c1">#our primary key, we need to change that </span>
 <span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Self Employed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_2016</span><span class="o">.</span><span class="n">index</span>
 
 <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
@@ -12021,6 +12026,7 @@ div#notebook {
 <span class="n">df_2016</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">lst</span>
 
 
+<span class="c1">#all the possibilities for male/female</span>
 <span class="n">Male</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;male&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;MALE&#39;</span><span class="p">,</span><span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="s1">&#39;Male.&#39;</span><span class="p">,</span><span class="s1">&#39;Sex is male&#39;</span><span class="p">,</span><span class="s1">&#39;cis male&#39;</span><span class="p">,</span><span class="s1">&#39;man&#39;</span><span class="p">,</span><span class="s1">&#39;Male (cis)&#39;</span><span class="p">,</span><span class="s1">&#39;Man&#39;</span><span class="p">,</span><span class="s1">&#39;Cis male&#39;</span><span class="p">,</span><span class="s1">&#39;cis man&#39;</span><span class="p">,</span><span class="s1">&#39;M|&#39;</span><span class="p">,</span>
        <span class="s1">&#39;Malr&#39;</span><span class="p">,</span><span class="s1">&#39;Dude&#39;</span><span class="p">,</span><span class="s1">&#39;Cis Male&#39;</span><span class="p">,</span><span class="s1">&#39;cisdude&#39;</span><span class="p">,</span><span class="s1">&#39;mail&#39;</span><span class="p">,</span> <span class="s1">&#39;Cis Man&#39;</span><span class="p">,</span> <span class="s1">&#39;Mail&#39;</span><span class="p">,</span> <span class="s1">&#39;Make&#39;</span><span class="p">,</span><span class="s1">&#39;Male (CIS)&#39;</span><span class="p">,</span><span class="s1">&#39;maile&#39;</span><span class="p">,</span>
        <span class="s1">&#39;I</span><span class="se">\&#39;</span><span class="s1">m a man why didn</span><span class="se">\&#39;</span><span class="s1">t you make this a drop down question. You should of asked sex? And I would of answered yes please. Seriously how much text can this take?&#39;</span><span class="p">}</span>
@@ -12028,7 +12034,7 @@ div#notebook {
          <span class="p">,</span><span class="s1">&#39;Cis female&#39;</span><span class="p">,</span><span class="s1">&#39;woman&#39;</span><span class="p">,</span><span class="s1">&#39;Cisgender Female&#39;</span><span class="p">,</span><span class="s1">&#39;female/woman&#39;</span><span class="p">,</span><span class="s1">&#39;Female (props for making this a freeform field, though)&#39;</span><span class="p">,</span>
          <span class="s1">&#39;fem&#39;</span><span class="p">,</span><span class="s1">&#39;fm&#39;</span><span class="p">,</span><span class="s1">&#39;Cis-woman&#39;</span><span class="p">,</span><span class="s1">&#39;Female (cis)&#39;</span><span class="p">,</span><span class="s1">&#39;Cis Female&#39;</span><span class="p">}</span>
 
-
+<span class="c1">#Iterate over the dataframe and make the data readable</span>
 <span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">col</span> <span class="ow">in</span> <span class="n">df_2016</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">company</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
@@ -12210,7 +12216,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_2016</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Gender&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#We can use groupby to get a count of how many males, females and other is in the survey</span>
+<span class="n">df_2016</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Gender&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12248,7 +12255,9 @@ dtype: int64</pre>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Before we start analyzing our data, it's important not to compare values that wouldn't make sense. The survey population is 24% female, 74% male and .02% other. Therefore, comparing men directly against women would not work because it would be bias.</p>
 <h3 id="Analyzing-our-data">Analyzing our data<a class="anchor-link" href="#Analyzing-our-data">&#182;</a></h3><p>Let’s start by creating a bar graph to see if there are noticable trends between having a mental health disorder
-and the company size, age, gender.</p>
+and the company size, age, gender. The groupby funtion allows us to sort the values in groups by
+whichever indecies we provide. Here, we see how the company size correlates to the number of people
+that said yes or no to having a mental health disorder.</p>
 
 </div>
 </div>
@@ -12260,7 +12269,7 @@ and the company size, age, gender.</p>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">=</span><span class="n">df_2016</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Company Size&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span><span class="s2">&quot;Do you currently have a mental health disorder&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span><span class="s2">&quot;Do you currently have a mental health disorder?&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Company Size&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Count&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="n">ax</span>
@@ -12565,7 +12574,9 @@ vP1/LO5M75FmOb8AAAAASUVORK5CYII=
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ranges</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#The original data had a variety of ages, we can use bins to </span>
+<span class="c1">#round up a persons age to one number then find trends</span>
+<span class="n">ranges</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">]</span>
 <span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Rounded Age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">70</span><span class="p">],</span><span class="n">labels</span><span class="o">=</span><span class="n">ranges</span><span class="p">)</span>
 
 <span class="n">df</span><span class="o">=</span><span class="n">df_2016</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Rounded Age&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
@@ -12846,7 +12857,8 @@ ljUnDzMzy5qTh5mZZc3Jw8zMsubkYWZmWft/+34Re3H5APgAAAAASUVORK5CYII=
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The above displays the correlation between the age and if a person has a mental health disorder. 
-We can see that the population over 40 have said yes to having a mental health order.</p>
+We can see that the population over 40 have said yes to having a mental health order. This is within all genders
+and company sizes</p>
 
 </div>
 </div>
@@ -13183,7 +13195,9 @@ dtype: int64</pre>
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f_2016</span> <span class="o">=</span> <span class="n">df_2016</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#We create a new dataframe with only the females answers</span>
+<span class="c1">#then we test how women of different ages responded to having a mental health disorder</span>
+<span class="n">f_2016</span> <span class="o">=</span> <span class="n">df_2016</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">f_2016</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Rounded Age&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span><span class="s2">&quot;Do you currently have a mental health disorder&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -13454,8 +13468,9 @@ ZmYZ4YRuZpYRTuhmZhnx/wO5n/zJ7Hv7CAAAAABJRU5ErkJggg==
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f_2016</span> <span class="o">=</span> <span class="n">df_2016</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">]</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">f_2016</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Rounded Age&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#We can repeat the same process with males</span>
+<span class="n">m_2016</span> <span class="o">=</span> <span class="n">df_2016</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">m_2016</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Rounded Age&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span><span class="s2">&quot;Do you currently have a mental health disorder&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span>
@@ -13719,7 +13734,8 @@ SMQp0YuIRNz/B6sw29YVDiM/AAAAAElFTkSuQmCC
 <div class="prompt input_prompt">In&nbsp;[69]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dataframe_2014</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;mental-health-in-tech-2014.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Read 2014 csv file</span>
+<span class="n">dataframe_2014</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;mental-health-in-tech-2014.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">df1_2014</span> <span class="o">=</span> <span class="n">dataframe_2014</span>
 
@@ -13729,6 +13745,7 @@ SMQp0YuIRNz/B6sw29YVDiM/AAAAAElFTkSuQmCC
 
 <span class="n">df1_2014</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">lst</span>
 
+<span class="c1">#Data Tidying again</span>
 <span class="n">Male</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;male&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;MALE&#39;</span><span class="p">,</span><span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="s1">&#39;Male.&#39;</span><span class="p">,</span><span class="s1">&#39;Sex is male&#39;</span><span class="p">,</span><span class="s1">&#39;cis male&#39;</span><span class="p">,</span><span class="s1">&#39;man&#39;</span><span class="p">,</span><span class="s1">&#39;Male (cis)&#39;</span><span class="p">,</span><span class="s1">&#39;Man&#39;</span><span class="p">,</span><span class="s1">&#39;Cis male&#39;</span><span class="p">,</span><span class="s1">&#39;cis man&#39;</span><span class="p">,</span><span class="s1">&#39;M|&#39;</span><span class="p">,</span>
        <span class="s1">&#39;Malr&#39;</span><span class="p">,</span><span class="s1">&#39;Dude&#39;</span><span class="p">,</span><span class="s1">&#39;Cis Male&#39;</span><span class="p">,</span><span class="s1">&#39;cisdude&#39;</span><span class="p">,</span><span class="s1">&#39;mail&#39;</span><span class="p">,</span> <span class="s1">&#39;Cis Man&#39;</span><span class="p">,</span> <span class="s1">&#39;Mail&#39;</span><span class="p">,</span> <span class="s1">&#39;Make&#39;</span><span class="p">,</span><span class="s1">&#39;Male (CIS)&#39;</span><span class="p">,</span><span class="s1">&#39;maile&#39;</span><span class="p">,</span> <span class="s1">&#39;msle&#39;</span><span class="p">,</span><span class="s1">&#39;Mal&#39;</span><span class="p">,</span>
        <span class="s1">&#39;I</span><span class="se">\&#39;</span><span class="s1">m a man why didn</span><span class="se">\&#39;</span><span class="s1">t you make this a drop down question. You should of asked sex? And I would of answered yes please. Seriously how much text can this take?&#39;</span><span class="p">}</span>
@@ -13907,7 +13924,8 @@ dtype: int64</pre>
 <div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">=</span><span class="n">df_2014</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Company Size&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#See the correlation with company size and saying yes</span>
+<span class="n">df</span><span class="o">=</span><span class="n">df_2014</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Company Size&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span><span class="s2">&quot;Do you currently have a mental health disorder&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Company Size&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
@@ -14219,7 +14237,8 @@ any clear trend between those who said yes and the size of the company they work
 <div class="prompt input_prompt">In&nbsp;[71]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ranges</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Once again, compare age to having a mental health disorder</span>
+<span class="n">ranges</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">]</span>
 <span class="n">df_2014</span><span class="p">[</span><span class="s1">&#39;Rounded Age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">df_2014</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">70</span><span class="p">],</span><span class="n">labels</span><span class="o">=</span><span class="n">ranges</span><span class="p">)</span>
 
 <span class="n">df</span><span class="o">=</span><span class="n">df_2014</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Rounded Age&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
@@ -15304,7 +15323,7 @@ they have mental health disorders.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Testing-Our-Hypothesis">Testing Our Hypothesis<a class="anchor-link" href="#Testing-Our-Hypothesis">&#182;</a></h2><p>In order to make any conclusions, we need to put together the 2014 and 2016 data and continue. 
+<h2 id="Exploratory-Data-Analysis">Exploratory Data Analysis<a class="anchor-link" href="#Exploratory-Data-Analysis">&#182;</a></h2><p>In order to make any conclusions, we need to put together the 2014 and 2016 data and continue. 
 We can't compare the women to men, so lets compare then 2014 men to 2016 men and the 2014 women to 
 the 2016 women.</p>
 <p>We can combine the two tables on the same values using pandas concat, we have values
@@ -15319,9 +15338,11 @@ before hand.</p>
 <div class="prompt input_prompt">In&nbsp;[100]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2016</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Add an id to recognize differences</span>
+<span class="n">df_2016</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2016</span>
 <span class="n">df_2014</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2014</span>
 
+<span class="c1">#Combine 2016 and 2014 dataframes</span>
 <span class="n">df_1416</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_2014</span><span class="p">,</span> <span class="n">df_2016</span><span class="p">])</span>
 
 <span class="n">df_1416</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
@@ -15439,7 +15460,8 @@ before hand.</p>
 <div class="prompt input_prompt">In&nbsp;[107]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f_1416</span> <span class="o">=</span> <span class="n">df_1416</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_1416</span><span class="p">[</span><span class="s1">&#39;Gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Create a data frame with only womens answers from 2014 to 2016</span>
+<span class="n">f_1416</span> <span class="o">=</span> <span class="n">df_1416</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_1416</span><span class="p">[</span><span class="s1">&#39;Gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
 <span class="n">df</span><span class="o">=</span><span class="n">f_1416</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">,</span> <span class="s1">&#39;Rounded Age&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span><span class="s2">&quot;Do you currently have a mental health disorder&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
@@ -15680,7 +15702,8 @@ rAD6RcTC+tiG2c5yy8GscL4FvOrEYA2R7+dgVgCSSkg6r7fXuW5WMD6tZGZmGT6tZGZmGU4OZmaW
 <div class="prompt input_prompt">In&nbsp;[91]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f_1416</span> <span class="o">=</span> <span class="n">df_1416</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_1416</span><span class="p">[</span><span class="s1">&#39;Gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Same plot as before but now seperating by year</span>
+<span class="n">f_1416</span> <span class="o">=</span> <span class="n">df_1416</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_1416</span><span class="p">[</span><span class="s1">&#39;Gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
 <span class="n">df</span><span class="o">=</span><span class="n">f_1416</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span><span class="s1">&#39;Do you currently have a mental health disorder?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span><span class="s2">&quot;Do you currently have a mental health disorder&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
